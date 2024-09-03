@@ -20,6 +20,23 @@ return {
           ['\\'] = 'close_window',
         },
       },
+      filtered_items = {
+        show_hidden_count = true,
+        hide_dotfiles = false,
+        hide_gitignored = true,
+        hide_by_name = {
+          '.github',
+          '.gitignore',
+          'node_modules',
+        },
+        -- uses glob style patterns
+        hide_by_pattern = {
+          '*-lock.json',
+        },
+        -- remains hidden even if visible is toggled to true,
+        -- this overrides always_show
+        never_show = { '.git' },
+      },
     },
   },
 }
