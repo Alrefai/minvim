@@ -1,3 +1,12 @@
+-- Disable line wrap for all file types except Markdown
+vim.cmd [[
+  augroup DisableLineWrap
+    autocmd!
+    autocmd FileType * setlocal nowrap
+    autocmd FileType markdown setlocal wrap
+  augroup END
+]]
+
 -- Make Neotree always visible
 --
 -- references:
