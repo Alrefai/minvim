@@ -97,7 +97,7 @@ vim.g.have_nerd_font = true
 -- See `:help vim.opt`
 -- NOTE: You can change these options as you wish!
 --  For more options, you can see `:help option-list`
-require('custom.core')
+require 'custom.core'
 
 -- Make line numbers default
 vim.opt.number = true
@@ -705,6 +705,7 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        nix = { 'alejandra' },
       },
     },
   },
