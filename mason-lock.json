@@ -1,4 +1,5 @@
 {
   "lua-language-server": "3.10.6",
+  "markdownlint": "0.41.0",
   "stylua": "v0.20.0"
 }
