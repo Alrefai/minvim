@@ -395,15 +395,14 @@ require('lazy').setup({
         },
         pickers = {
           find_files = {
-            file_ignore_patterns = { 'node_modules', '.git' },
-            hidden = true,
+            -- `hidden = true` will still show the inside of `.git/` as it's not `.gitignore`d.
+            find_command = { 'rg', '--files', '--hidden', '--glob', '!**/.git*/*' },
           },
-        },
-        live_grep = {
-          file_ignore_patterns = { 'node_modules', '.git' },
-          additional_args = function(_)
-            return { '--hidden' }
-          end,
+          live_grep = {
+            additional_args = function(_)
+              return { '--hidden', '--glob', '!**/.git*/*' }
+            end,
+          },
         },
         extensions = {
           ['ui-select'] = {
