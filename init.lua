@@ -735,7 +735,7 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       {
@@ -753,12 +753,12 @@ require('lazy').setup({
           -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
-          -- {
-          --   'rafamadriz/friendly-snippets',
-          --   config = function()
-          --     require('luasnip.loaders.from_vscode').lazy_load()
-          --   end,
-          -- },
+          {
+            'rafamadriz/friendly-snippets',
+            config = function()
+              require('luasnip.loaders.from_vscode').lazy_load()
+            end,
+          },
         },
       },
       'saadparwaiz1/cmp_luasnip',
@@ -768,12 +768,56 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'hrsh7th/cmp-nvim-lsp-signature-help',
+      'hrsh7th/cmp-nvim-lsp-document-symbol',
+      'onsails/lspkind.nvim',
+      'hrsh7th/cmp-buffer',
+      { 'hrsh7th/cmp-cmdline' },
+      {
+        'supermaven-inc/supermaven-nvim',
+        opts = {
+          disable_inline_completion = true,
+          disable_keymaps = true,
+          loglevel = 'warn',
+        },
+      },
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
       luasnip.config.setup {}
+
+      -- Confirm candidate on TAB immediately when there's only one completion entry.
+      --
+      -- ---
+      -- references:
+      --
+      -- - https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#confirm-candidate-on-tab-immediately-when-theres-only-one-completion-entry
+      local tab_completion = function(action)
+        return function(fallback)
+          local has_words_before = function()
+            unpack = unpack or table.unpack
+            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+            return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match '%s' == nil
+          end
+
+          if cmp.visible() then
+            if #cmp.get_entries() == 1 then
+              cmp.confirm { select = true }
+            else
+              action()
+            end
+          elseif has_words_before() then
+            cmp.complete()
+            if #cmp.get_entries() == 1 then
+              cmp.confirm { select = true }
+            end
+          else
+            fallback()
+          end
+        end
+      end
 
       cmp.setup {
         snippet = {
@@ -782,6 +826,32 @@ require('lazy').setup({
           end,
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
+
+        -- Display the fancy icons to completion-menu with lspkind-nvim.
+        --
+        -- ---
+        --
+        -- references:
+        -- - https://github.com/onsails/lspkind.nvim#option-2-nvim-cmp
+        -- - https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-get-types-on-the-left-and-offset-the-menu
+        ---@diagnostic disable-next-line: missing-fields
+        formatting = {
+          fields = { 'kind', 'abbr', 'menu' },
+          format = function(entry, vim_item)
+            local kind = require('lspkind').cmp_format {
+              mode = 'symbol_text',
+              maxwidth = 50,
+              ellipsis_char = '...',
+              symbol_map = { Supermaven = '' },
+            }(entry, vim_item)
+
+            local strings = vim.split(kind.kind, '%s', { trimempty = true })
+            kind.kind = ' ' .. (strings[1] or '') .. ' '
+            kind.menu = '    [' .. (strings[2] or '') .. ']'
+
+            return kind
+          end,
+        },
 
         -- For an understanding of why these mappings were
         -- chosen, you will need to read `:help ins-completion`
@@ -807,6 +877,10 @@ require('lazy').setup({
           --['<CR>'] = cmp.mapping.confirm { select = true },
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
+
+          -- Smart Tab completion
+          ['<Tab>'] = cmp.mapping(tab_completion(cmp.select_next_item), { 'i', 's' }),
+          ['<S-Tab>'] = cmp.mapping(tab_completion(cmp.select_prev_item), { 'i', 's' }),
 
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
@@ -836,16 +910,109 @@ require('lazy').setup({
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
         },
         sources = {
+          { name = 'supermaven' },
           {
             name = 'lazydev',
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
           { name = 'nvim_lsp' },
+          { name = 'nvim_lsp_signature_help' },
           { name = 'luasnip' },
           { name = 'path' },
+          { name = 'buffer', keyword_length = 5 },
+        },
+
+        -- Custom Menu Direction
+        --
+        -- ---
+        --
+        -- references:
+        -- - https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#custom-menu-direction
+        view = {
+          entries = { name = 'custom', selection_order = 'near_cursor' },
+        },
+
+        -- Add borders around floating windows.
+        --
+        -- ---
+        --
+        -- references:
+        -- - https://github.com/hrsh7th/nvim-cmp/blob/ae644feb7b67bf1ce4260c231d1d4300b19c6f30/README.md?plain=1#L74
+        window = {
+          completion = cmp.config.window.bordered(),
+          documentation = cmp.config.window.bordered(),
         },
       }
+
+      -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://github.com/hrsh7th/nvim-cmp/blob/ae644feb7b67bf1ce4260c231d1d4300b19c6f30/README.md?plain=1#L108
+      -- - https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#confirm-candidate-on-tab-immediately-when-theres-only-one-completion-entry
+      -- - https://github.com/hrsh7th/cmp-nvim-lsp-document-symbol#setup
+      cmp.setup.cmdline({ '/', '?' }, {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Tab>'] = {
+            c = function(_)
+              if cmp.visible() then
+                if #cmp.get_entries() == 1 then
+                  cmp.confirm { select = true }
+                else
+                  cmp.select_next_item()
+                end
+              else
+                cmp.complete()
+                if #cmp.get_entries() == 1 then
+                  cmp.confirm { select = true }
+                end
+              end
+            end,
+          },
+        },
+        sources = cmp.config.sources({
+          { name = 'nvim_lsp_document_symbol' },
+        }, {
+          { name = 'buffer' },
+        }),
+      })
+
+      -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://github.com/hrsh7th/nvim-cmp/blob/ae644feb7b67bf1ce4260c231d1d4300b19c6f30/README.md?plain=1#L116
+      -- - https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#confirm-candidate-on-tab-immediately-when-theres-only-one-completion-entry
+      cmp.setup.cmdline(':', {
+        mapping = cmp.mapping.preset.cmdline {
+          ['<Tab>'] = {
+            c = function(_)
+              if cmp.visible() then
+                if #cmp.get_entries() == 1 then
+                  cmp.confirm { select = true }
+                else
+                  cmp.select_next_item()
+                end
+              else
+                cmp.complete()
+                if #cmp.get_entries() == 1 then
+                  cmp.confirm { select = true }
+                end
+              end
+            end,
+          },
+        },
+        sources = cmp.config.sources({
+          { name = 'path' },
+        }, {
+          { name = 'cmdline' },
+        }),
+        ---@diagnostic disable-next-line: missing-fields
+        matching = { disallow_symbol_nonprefix_matching = false },
+      })
     end,
   },
 
