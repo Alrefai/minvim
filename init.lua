@@ -596,6 +596,26 @@ require('lazy').setup({
             })
           end
 
+          -- Add borders around LSP floating windows.
+          --
+          -- ---
+          --
+          -- references:
+          -- - https://vi.stackexchange.com/a/39075
+          local _border = 'rounded'
+
+          vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
+            border = _border,
+          })
+
+          vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
+            border = _border,
+          })
+
+          vim.diagnostic.config {
+            float = { border = _border },
+          }
+
           -- The following code creates a keymap to toggle inlay hints in your
           -- code, if the language server you are using supports them
           --
