@@ -160,4 +160,14 @@ return {
       },
     },
   },
+  {
+    'folke/zen-mode.nvim',
+    event = 'VeryLazy',
+    opts = {
+      window = { backdrop = 1, width = 90 },
+      plugins = {
+        tmux = { enabled = true }, -- disables the tmux statusline
+      },
+    },
+  },
 }
