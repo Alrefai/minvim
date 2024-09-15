@@ -13,5 +13,4 @@ vim.keymap.set('n', 'j', "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = tr
 vim.keymap.set('n', '<leader>wv', '<C-w>v', { desc = 'Split [W]indow [V]ertically' })
 vim.keymap.set('n', '<leader>wh', '<C-w>s', { desc = 'Split [W]indow [H]orizontally' })
 vim.keymap.set('n', '<leader>we', '<C-w>=', { desc = 'Make Splits [W]indow [E]qual Size' })
-vim.keymap.set('n', '<leader>x', '<cmd>close<CR>', { desc = '[X] Close Current Split [W]indow' })
 vim.keymap.set('n', 'x', '"_x', { desc = 'Delete single character without copying into register' })

@@ -390,6 +390,7 @@ require('lazy').setup({
             i = {
               ['<C-k>'] = require('telescope.actions').move_selection_previous, -- move to prev result
               ['<C-j>'] = require('telescope.actions').move_selection_next, -- move to next result
+              ['<c-t>'] = require('trouble.sources.telescope').open, -- open on trouble
             },
           },
         },
