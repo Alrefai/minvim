@@ -414,6 +414,7 @@ require('lazy').setup({
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
+      pcall(require('telescope').load_extension, 'noice')
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
@@ -428,6 +429,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>st', '<cmd>TodoTelescope<cr>', { desc = '[S]earch [T]odos' })
+      vim.keymap.set('n', '<leader>sm', '<cmd>Telescope noice<cr>', { desc = '[S]earch Notification [M]essages' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -480,7 +482,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', opts = {} },
+      -- { 'j-hui/fidget.nvim', opts = {} },
 
       -- Allows extra capabilities provided by nvim-cmp
       'hrsh7th/cmp-nvim-lsp',
@@ -596,26 +598,6 @@ require('lazy').setup({
               end,
             })
           end
-
-          -- Add borders around LSP floating windows.
-          --
-          -- ---
-          --
-          -- references:
-          -- - https://vi.stackexchange.com/a/39075
-          local _border = 'rounded'
-
-          vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(vim.lsp.handlers.hover, {
-            border = _border,
-          })
-
-          vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(vim.lsp.handlers.signature_help, {
-            border = _border,
-          })
-
-          vim.diagnostic.config {
-            float = { border = _border },
-          }
 
           -- The following code creates a keymap to toggle inlay hints in your
           -- code, if the language server you are using supports them

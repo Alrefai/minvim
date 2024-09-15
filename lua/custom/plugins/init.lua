@@ -47,4 +47,76 @@ return {
       }
     end,
   },
+  {
+    'folke/noice.nvim',
+    event = 'VeryLazy',
+    --- Configuration Recipes
+    ---
+    --- ---
+    ---
+    --- references:
+    --- - https://github.com/folke/noice.nvim?tab=readme-ov-file#%EF%B8%8F-configuration
+    --- - https://github.com/folke/noice.nvim/wiki/Configuration-Recipes
+    --- - https://github.com/omerxx/dotfiles/blob/2f715c6ed2149e67330155f15a001a624accdd28/nvim/lua/plugins/lazy.lua#L152C11-L165C11
+    opts = {
+      lsp = {
+        -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        override = {
+          -- override the default lsp markdown formatter with Noice
+          ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+          -- override the lsp markdown formatter with Noice
+          ['vim.lsp.util.stylize_markdown'] = true,
+          -- override cmp documentation with Noice (needs the other options to work)
+          ['cmp.entry.get_documentation'] = true,
+        },
+      },
+      -- you can enable a preset for easier configuration
+      presets = {
+        long_message_to_split = true, -- long messages will be sent to a split
+        lsp_doc_border = true, -- add a border to hover docs and signature help
+      },
+      popupmenu = {
+        ---@type 'nui'|'cmp'
+        backend = 'cmp', -- backend to use to show regular cmdline completions
+      },
+      routes = {
+        -- Show `@recording` messages
+        {
+          view = 'notify',
+          filter = { event = 'msg_showmode' },
+        },
+        -- Hide `written` messages
+        {
+          filter = {
+            event = 'msg_show',
+            kind = '',
+            find = 'written',
+          },
+          opts = { skip = true },
+        },
+        --- Hide various unwanted messages
+        {
+          filter = {
+            event = 'msg_show',
+            any = {
+              { find = '%d+L, %d+B' },
+              { find = '; after #%d+' },
+              { find = '; before #%d+' },
+              { find = '%d fewer lines' },
+              { find = '%d more lines' },
+            },
+          },
+          opts = { skip = true },
+        },
+      },
+    },
+    dependencies = {
+      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+      'MunifTanjim/nui.nvim',
+      -- OPTIONAL:
+      --   `nvim-notify` is only needed, if you want to use the notification view.
+      --   If not available, we use `mini` as the fallback
+      'rcarriga/nvim-notify',
+    },
+  },
 }
