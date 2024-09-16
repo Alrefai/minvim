@@ -1081,6 +1081,9 @@ require('lazy').setup({
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    dependencies = {
+      { 'JoosepAlviste/nvim-ts-context-commentstring', opts = { enable_autocmd = false } },
+    },
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -1114,6 +1117,18 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://github.com/JoosepAlviste/nvim-ts-context-commentstring/wiki/Integrations#minicomment
+      require('mini.comment').setup {
+        options = {
+          custom_commentstring = function()
+            return require('ts_context_commentstring').calculate_commentstring() or vim.bo.commentstring
+          end,
+        },
+      }
     end,
   },
   { -- Highlight, edit, and navigate code
