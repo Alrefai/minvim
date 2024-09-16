@@ -94,6 +94,14 @@ return {
           },
           opts = { skip = true },
         },
+        -- Hide `No inforamtion available` messages
+        {
+          filter = {
+            event = 'notify',
+            find = 'No information available',
+          },
+          opts = { skip = true },
+        },
         --- Hide various unwanted messages
         {
           filter = {
