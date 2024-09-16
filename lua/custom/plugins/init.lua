@@ -163,12 +163,28 @@ return {
   {
     'folke/zen-mode.nvim',
     event = 'VeryLazy',
-    opts = {
-      window = { backdrop = 1, width = 90 },
-      plugins = {
-        tmux = { enabled = true }, -- disables the tmux statusline
-      },
-    },
+    config = function()
+      require('zen-mode').setup {
+        window = { backdrop = 1, width = 90 },
+        plugins = {
+          tmux = { enabled = true }, -- disables the tmux statusline
+        },
+      }
+
+      -- Close zen-mode when leaving nvim.
+      -- Fixes issue where tmux statusline is not restored when quitting nvim
+      -- while in zen-mode.
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://github.com/folke/zen-mode.nvim/issues/111#issuecomment-2181237746
+      vim.api.nvim_create_autocmd({ 'VimLeavePre' }, {
+        callback = function()
+          require('zen-mode').close()
+        end,
+      })
+    end,
   },
   {
     'akinsho/bufferline.nvim',
