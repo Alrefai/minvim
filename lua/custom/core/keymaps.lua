@@ -4,6 +4,9 @@ vim.keymap.set({ 'n', 'x' }, 's', '<Nop>')
 
 -- Misc
 vim.keymap.set('i', 'jk', '<ESC>', { desc = 'Exit insert mode with jk' })
+vim.keymap.set('n', '<leader>;', ':', { desc = '[;] Luanch Command Line' })
+vim.keymap.set('n', '0', '^', { desc = 'Swap `0` and `^`', noremap = true })
+vim.keymap.set('n', '^', '0', { desc = 'Swap `0` and `^`', noremap = true })
 
 -- Remap for dealing with word wrap
 vim.keymap.set('n', 'k', "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
