@@ -1042,6 +1042,14 @@ require('lazy').setup({
       color_overrides = {
         mocha = { base = '#000000', mantle = '#000000', crust = '#000000' },
       },
+      integrations = {
+        mason = true,
+        neotree = true,
+        noice = true,
+        notify = true,
+        lsp_trouble = true,
+        which_key = true,
+      },
     },
     init = function()
       -- Load the colorscheme here.
