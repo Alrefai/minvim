@@ -630,7 +630,11 @@ require('lazy').setup({
       capabilities = vim.tbl_deep_extend('force', capabilities, require('cmp_nvim_lsp').default_capabilities())
 
       -- Custom language servers that must be installed manually without Mason.
+      --
+      -- NOTE: nixd LSP is not available on Mason registry.
+      -- BUG: Marksman LSP crashes on startup when installed with Mason (on NixOS).
       require('lspconfig').nixd.setup { capabilities = capabilities }
+      require('lspconfig').marksman.setup { capabilities = capabilities }
 
       -- Enable the following language servers
       --  Feel free to add/remove any LSPs that you want here. They will automatically be installed.
@@ -655,6 +659,70 @@ require('lazy').setup({
         -- tsserver = {},
         --
 
+        astro = {},
+
+        -- Bash Language Server
+        --
+        -- ---
+        --
+        -- dependencies:
+        -- - [shellcheck][1] for linting
+        -- - [shfmt][2] for formatting
+        --
+        -- [1]: https://github.com/koalaman/shellcheck
+        -- [2]: https://github.com/mvdan/sh
+        bashls = {},
+
+        -- Deno Language Server
+        --
+        -- ---
+        --
+        -- references:
+        -- - https://docs.deno.com/runtime/reference/lsp/
+        -- - https://docs.deno.com/runtime/getting_started/setup_your_environment/#neovim-0.6%2B-using-the-built-in-language-server
+        denols = {
+          root_dir = require('lspconfig').util.root_pattern('deno.json', 'deno.jsonc'),
+        },
+
+        dprint = {
+          filetypes = {
+            'astro',
+            'html',
+            'dockerfile',
+            'graphql',
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+            'json',
+            'jsonc',
+            'markdown',
+            'python',
+            'toml',
+            'rust',
+            'roslyn',
+          },
+          root_dir = require('lspconfig').util.root_pattern('dprint.json', 'dprint.jsonc'),
+        },
+
+        eslint = {
+          on_attach = function(_, bufnr)
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              buffer = bufnr,
+              command = 'EslintFixAll',
+            })
+          end,
+          settings = {
+            experimental = { useFlatConfig = true },
+            format = false,
+            packageManager = 'pnpm',
+          },
+        },
+
+        graphql = {},
+
+        html = {},
+
         lua_ls = {
           -- cmd = {...},
           -- filetypes = { ...},
@@ -669,6 +737,46 @@ require('lazy').setup({
             },
           },
         },
+
+        -- TypeScript Language Server
+        --
+        -- ---
+        --
+        -- references:
+        -- - https://docs.deno.com/runtime/getting_started/setup_your_environment/#neovim-0.6%2B-using-the-built-in-language-server
+        ts_ls = {
+          root_dir = require('lspconfig').util.root_pattern 'package.json',
+          single_file_support = false,
+        },
+
+        unocss = {
+          filetypes = {
+            'astro',
+            'html',
+            'javascript',
+            'javascriptreact',
+            'typescript',
+            'typescriptreact',
+            'vue',
+            'svelte',
+          },
+        },
+
+        yamlls = {},
+      }
+
+      -- To appropriately highlight codefences returned from denols,
+      -- you will need to augment `vim.g.markdown_fenced` languages.
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#denols
+      vim.g.markdown_fenced_languages = {
+        'ts=typescript',
+        'tsx=typescriptreact',
+        'js=javascript',
+        'jsx=javascriptreact',
       }
 
       -- Ensure the servers and tools above are installed
@@ -686,6 +794,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'markdownlint', -- Used to lint markdown files
       })
       require('mason-tool-installer').setup {
         ensure_installed = ensure_installed,
@@ -708,6 +817,14 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Set the border style for LspInfo window
+      --
+      -- ---
+      --
+      -- references:
+      -- - https://vi.stackexchange.com/a/39001
+      require('lspconfig.ui.windows').default_options.border = 'rounded'
     end,
   },
 
@@ -731,7 +848,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { astro = true, c = true, cpp = true }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -744,6 +861,7 @@ require('lazy').setup({
         }
       end,
       formatters_by_ft = {
+        astro = { 'dprint' },
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
@@ -751,7 +869,6 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
         nix = { 'alejandra' },
-        sh = { 'shfmt' },
       },
     },
   },
@@ -938,7 +1055,16 @@ require('lazy').setup({
             -- set group index to 0 to skip loading LuaLS completions as lazydev recommends it
             group_index = 0,
           },
-          { name = 'nvim_lsp' },
+          {
+            name = 'nvim_lsp',
+            --- Add `-` to `trigger_characters` for UnoCSS Language Server.
+            ---
+            --- ---
+            ---
+            --- references:
+            --- - https://github.com/xna00/unocss-language-server?tab=readme-ov-file#usage
+            trigger_characters = { '-' },
+          },
           { name = 'nvim_lsp_signature_help' },
           { name = 'luasnip' },
           { name = 'path' },
