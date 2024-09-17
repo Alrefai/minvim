@@ -665,7 +665,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
@@ -848,7 +848,6 @@ require('lazy').setup({
         -- references:
         -- - https://github.com/onsails/lspkind.nvim#option-2-nvim-cmp
         -- - https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-get-types-on-the-left-and-offset-the-menu
-        ---@diagnostic disable-next-line: missing-fields
         formatting = {
           fields = { 'kind', 'abbr', 'menu' },
           format = function(entry, vim_item)
@@ -1024,7 +1023,6 @@ require('lazy').setup({
         }, {
           { name = 'cmdline' },
         }),
-        ---@diagnostic disable-next-line: missing-fields
         matching = { disallow_symbol_nonprefix_matching = false },
       })
     end,
