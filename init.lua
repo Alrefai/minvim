@@ -393,6 +393,8 @@ require('lazy').setup({
               ['<C-k>'] = require('telescope.actions').move_selection_previous, -- move to prev result
               ['<C-j>'] = require('telescope.actions').move_selection_next, -- move to next result
               ['<c-t>'] = require('trouble.sources.telescope').open, -- open on trouble
+              ['<C-q>'] = require('telescope.actions').send_selected_to_qflist + require('telescope.actions').open_qflist,
+              ['<C-x>'] = require('telescope.actions').delete_buffer,
             },
           },
         },
