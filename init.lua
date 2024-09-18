@@ -1340,6 +1340,7 @@ require('lazy').setup({
       task = '📌',
       lazy = '💤 ',
     },
+    border = 'rounded',
   },
 })
 
