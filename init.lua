@@ -1066,9 +1066,9 @@ require('lazy').setup({
             trigger_characters = { '-' },
           },
           { name = 'nvim_lsp_signature_help' },
-          { name = 'luasnip' },
-          { name = 'path' },
-          { name = 'buffer', keyword_length = 5 },
+          { name = 'luasnip', max_item_count = 3 },
+          { name = 'path', max_item_count = 3 },
+          { name = 'buffer', keyword_length = 5, max_item_count = 5 },
         },
 
         -- Custom Menu Direction
@@ -1123,7 +1123,7 @@ require('lazy').setup({
         sources = cmp.config.sources({
           { name = 'nvim_lsp_document_symbol' },
         }, {
-          { name = 'buffer' },
+          { name = 'buffer', keyword_length = 5, max_item_count = 5 },
         }),
       })
 
@@ -1154,7 +1154,7 @@ require('lazy').setup({
           },
         },
         sources = cmp.config.sources({
-          { name = 'path' },
+          { name = 'path', max_item_count = 3 },
         }, {
           { name = 'cmdline' },
         }),
