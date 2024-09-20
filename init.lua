@@ -705,6 +705,7 @@ require('lazy').setup({
             'roslyn',
           },
           root_dir = require('lspconfig').util.root_pattern('dprint.json', 'dprint.jsonc'),
+          single_file_support = false,
         },
 
         eslint = {
