@@ -219,4 +219,18 @@ return {
     ft = { 'markdown' },
     opts = {},
   },
+  {
+    -- TypeScript Language Server
+    --
+    -- ---
+    --
+    -- references:
+    -- - https://docs.deno.com/runtime/getting_started/setup_your_environment/#neovim-0.6%2B-using-the-built-in-language-server
+    'pmizio/typescript-tools.nvim',
+    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+    opts = {
+      root_dir = require('lspconfig').util.root_pattern 'package.json',
+      single_file_support = false,
+    },
+  },
 }

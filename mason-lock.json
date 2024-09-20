@@ -8,7 +8,6 @@
   "html-lsp": "4.10.0",
   "lua-language-server": "3.10.6",
   "stylua": "v0.20.0",
-  "typescript-language-server": "4.3.3",
   "unocss-language-server": "0.1.5",
   "yaml-language-server": "1.15.0"
 }

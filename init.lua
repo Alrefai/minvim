@@ -740,17 +740,6 @@ require('lazy').setup({
           },
         },
 
-        -- TypeScript Language Server
-        --
-        -- ---
-        --
-        -- references:
-        -- - https://docs.deno.com/runtime/getting_started/setup_your_environment/#neovim-0.6%2B-using-the-built-in-language-server
-        ts_ls = {
-          root_dir = require('lspconfig').util.root_pattern 'package.json',
-          single_file_support = false,
-        },
-
         unocss = {
           filetypes = {
             'astro',
