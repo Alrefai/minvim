@@ -1280,13 +1280,77 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      textobjects = {
+        select = {
+          enable = true,
+
+          -- Automatically jump forward to textobj, similar to targets.vim
+          lookahead = true,
+
+          keymaps = {
+            -- You can use the capture groups defined in textobjects.scm
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>a'] = '@parameter.inner',
+          },
+          swap_previous = {
+            ['<leader>A'] = '@parameter.inner',
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true, -- whether to set jumps in the jumplist
+          goto_next_start = {
+            [']m'] = '@function.outer',
+          },
+          goto_next_end = {
+            [']M'] = '@function.outer',
+          },
+          goto_previous_start = {
+            ['[m'] = '@function.outer',
+          },
+          goto_previous_end = {
+            ['[M'] = '@function.outer',
+          },
+        },
+        lsp_interop = {
+          enable = true,
+          border = 'rounded',
+          peek_definition_code = {
+            ['<leader>df'] = '@function.outer',
+          },
+        },
+      },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
     --
-    --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-    --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-    --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    -- - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
+    -- - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
+    -- - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+    dependencies = {
+      { 'nvim-treesitter/nvim-treesitter-textobjects' },
+      {
+        'nvim-treesitter/nvim-treesitter-context',
+        opts = {
+          -- How many lines the window should span. Values <= 0 mean no limit.
+          max_lines = 3,
+          -- Minimum editor window height to enable context. Values <= 0 mean no limit.
+          min_window_height = 20,
+          -- Maximum number of lines to show for a single context
+          multiline_threshold = 20,
+          -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+          trim_scope = 'outer',
+          -- Line used to calculate context. Choices: 'cursor', 'topline'
+          mode = 'cursor',
+        },
+      },
+    },
   },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
