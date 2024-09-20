@@ -5,6 +5,7 @@
 return {
   {
     'alexghergh/nvim-tmux-navigation',
+    event = 'VeryLazy',
     opts = {
       disable_when_zoomed = true, -- defaults to false
       keybindings = {
@@ -38,14 +39,12 @@ return {
   },
   {
     'zapling/mason-lock.nvim',
-    init = function()
-      require('mason-lock').setup {
-        lockfile_path = vim.fn.stdpath 'config' .. '/mason-lock.json', -- (default)
-      }
-    end,
+    cmd = { 'MasonLock', 'MasonLockRestore' },
+    opts = {},
   },
   {
     'folke/noice.nvim',
+    version = '*',
     event = 'VeryLazy',
     --- Configuration Recipes
     ---
@@ -126,6 +125,7 @@ return {
   },
   {
     'folke/trouble.nvim',
+    version = '*',
     dependencies = {
       'nvim-tree/nvim-web-devicons',
       'folke/todo-comments.nvim',
@@ -167,7 +167,7 @@ return {
   },
   {
     'folke/zen-mode.nvim',
-    event = 'VeryLazy',
+    cmd = 'ZenMode',
     config = function()
       require('zen-mode').setup {
         window = { backdrop = 1, width = 90 },
@@ -195,7 +195,7 @@ return {
     'akinsho/bufferline.nvim',
     version = '*',
     dependencies = 'nvim-tree/nvim-web-devicons',
-    event = 'VeryLazy',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       options = {
         mode = 'tabs',
@@ -227,6 +227,7 @@ return {
     -- references:
     -- - https://docs.deno.com/runtime/getting_started/setup_your_environment/#neovim-0.6%2B-using-the-built-in-language-server
     'pmizio/typescript-tools.nvim',
+    ft = { 'javascript', 'javascriptreact', 'typescript', 'typescriptreact' },
     dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
     opts = {
       root_dir = require('lspconfig').util.root_pattern 'package.json',
@@ -235,6 +236,8 @@ return {
   },
   {
     'lukas-reineke/virt-column.nvim',
+    version = '*',
+    event = { 'BufReadPre', 'BufNewFile' },
     opts = {
       virtcolumn = '81',
       highlight = { 'Whitespace' },
