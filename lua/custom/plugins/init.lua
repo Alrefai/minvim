@@ -233,4 +233,11 @@ return {
       single_file_support = false,
     },
   },
+  {
+    'lukas-reineke/virt-column.nvim',
+    opts = {
+      virtcolumn = '81',
+      highlight = { 'Whitespace' },
+    },
+  },
 }

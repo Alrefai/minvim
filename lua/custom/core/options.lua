@@ -1,6 +1,3 @@
--- Misc
-vim.opt.colorcolumn = '81'
-
 -- Disable line wrap for all file types except Markdown
 vim.cmd [[
   augroup DisableLineWrap
