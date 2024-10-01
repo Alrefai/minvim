@@ -243,4 +243,31 @@ return {
       highlight = { 'Whitespace' },
     },
   },
+  {
+    'jmbuhr/otter.nvim',
+    version = '*',
+    -- event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config = function()
+      require('otter').activate({
+        'bash',
+        'css',
+        'graphql',
+        'html',
+        'javascript',
+        'javascriptreact',
+        'json',
+        'lua',
+        'nix',
+        'python',
+        'regex',
+        'shell',
+        'typescript',
+        'typescriptreact',
+        'yaml',
+      }, true, true, nil)
+    end,
+  },
 }
