@@ -1351,6 +1351,7 @@ require('lazy').setup({
           mode = 'cursor',
         },
       },
+      { 'nushell/tree-sitter-nu', build = ':TSUpdate nu' },
     },
   },
 
