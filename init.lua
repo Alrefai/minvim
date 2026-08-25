@@ -1030,6 +1030,9 @@ do
       -- See `:help blink-cmp-config-keymap` for defining your own keymap
       preset = 'default',
 
+      ['<C-u>'] = { function(cmp) cmp.scroll_documentation_up(4) end },
+      ['<C-d>'] = { function(cmp) cmp.scroll_documentation_down(4) end },
+
       -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
       --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
     },
@@ -1041,13 +1044,27 @@ do
     },
 
     completion = {
+      menu = {
+        -- nvim-cmp style menu
+        draw = {
+          columns = {
+            { 'kind_icon', 'label', 'label_description', gap = 2 },
+            { 'kind' },
+          },
+        },
+      },
       -- By default, you may press `<c-space>` to show the documentation.
       -- Optionally, set `auto_show = true` to show the documentation after a delay.
       documentation = { auto_show = false, auto_show_delay_ms = 500 },
+
+      -- Display a preview of the selected item on the current line
+      ghost_text = { enabled = true },
     },
 
     sources = {
-      default = { 'lsp', 'path', 'snippets' },
+      -- Remove 'buffer' if you don't want text completions.
+      -- By default it's only enabled when LSP returns no items.
+      default = { 'lsp', 'path', 'snippets', 'buffer' },
     },
 
     snippets = { preset = 'luasnip' },
@@ -1059,7 +1076,7 @@ do
     -- the rust implementation via `'prefer_rust_with_warning'`
     --
     -- See `:help blink-cmp-config-fuzzy` for more information
-    fuzzy = { implementation = 'lua' },
+    fuzzy = { implementation = 'prefer_rust_with_warning' },
 
     -- Shows a signature help window while you type arguments for a function
     signature = { enabled = true },
