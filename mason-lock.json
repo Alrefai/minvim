@@ -1,14 +1,14 @@
 {
-  "astro-language-server": "2.16.16",
-  "bash-language-server": "5.6.0",
-  "deno": "v2.9.6",
-  "dprint": "0.57.4",
+  "astro-language-server": "2.17.1",
+  "bash-language-server": "5.8.1",
+  "deno": "v2.9.7",
+  "dprint": "0.59.0",
   "eslint-lsp": "4.10.0",
   "graphql-language-service-cli": "3.5.0",
   "html-lsp": "4.10.0",
   "lua-language-server": "3.19.1",
   "stylua": "v2.5.2",
-  "typescript-language-server": "6.0.0",
+  "typescript-language-server": "6.0.1",
   "unocss-language-server": "0.1.9",
   "yaml-language-server": "1.24.0"
 }
